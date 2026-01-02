@@ -60,8 +60,8 @@ function App() {
     setScreen('backlog');
   };
 
-  const handleChangeItem = (id: string, field: keyof BacklogItem, value: string) => {
-    setBacklog((prev) => prev.map((row) => (row.id === id ? { ...row, [field]: value } : row)));
+  const handleChangeItem = <K extends keyof BacklogItem>(id: string, field: K, value: BacklogItem[K]) => {
+    setBacklog((prev) => prev.map((row) => (row.id === id ? ({ ...row, [field]: value } as BacklogItem) : row)));
   };
 
   const handleAddItem = () => {
@@ -84,6 +84,7 @@ function App() {
   const results = useMemo(() => rankBacklog(backlog, context.teamSize), [backlog, context.teamSize]);
 
   const handleStartOver = () => {
+    idCounter = 0;
     setContext(initialContext);
     setBacklog(Array.from({ length: 4 }, emptyRow));
     setGoalError('');

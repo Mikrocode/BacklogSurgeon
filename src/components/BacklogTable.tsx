@@ -7,7 +7,7 @@ const confidenceOptions: Confidence[] = ['Low', 'Medium', 'High'];
 
 interface BacklogTableProps {
   backlog: BacklogItem[];
-  onChangeItem: (id: string, field: keyof BacklogItem, value: string) => void;
+  onChangeItem: <K extends keyof BacklogItem>(id: string, field: K, value: BacklogItem[K]) => void;
 }
 
 const BacklogTable: React.FC<BacklogTableProps> = ({ backlog, onChangeItem }) => {
@@ -35,7 +35,7 @@ const BacklogTable: React.FC<BacklogTableProps> = ({ backlog, onChangeItem }) =>
               <td>
                 <select
                   value={row.impact}
-                  onChange={(e) => onChangeItem(row.id, 'impact', e.target.value)}
+                  onChange={(e) => onChangeItem(row.id, 'impact', e.target.value as Impact)}
                 >
                   {impactOptions.map((option) => (
                     <option key={option} value={option}>
@@ -47,7 +47,7 @@ const BacklogTable: React.FC<BacklogTableProps> = ({ backlog, onChangeItem }) =>
               <td>
                 <select
                   value={row.effort}
-                  onChange={(e) => onChangeItem(row.id, 'effort', e.target.value)}
+                  onChange={(e) => onChangeItem(row.id, 'effort', e.target.value as Effort)}
                 >
                   {effortOptions.map((option) => (
                     <option key={option} value={option}>
@@ -59,7 +59,7 @@ const BacklogTable: React.FC<BacklogTableProps> = ({ backlog, onChangeItem }) =>
               <td>
                 <select
                   value={row.confidence}
-                  onChange={(e) => onChangeItem(row.id, 'confidence', e.target.value)}
+                  onChange={(e) => onChangeItem(row.id, 'confidence', e.target.value as Confidence)}
                 >
                   {confidenceOptions.map((option) => (
                     <option key={option} value={option}>

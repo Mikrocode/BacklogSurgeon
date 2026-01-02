@@ -4,7 +4,7 @@ import { BacklogItem } from '../types';
 
 interface BacklogInputScreenProps {
   backlog: BacklogItem[];
-  onChangeItem: (id: string, field: keyof BacklogItem, value: string) => void;
+  onChangeItem: <K extends keyof BacklogItem>(id: string, field: K, value: BacklogItem[K]) => void;
   onAddItem: () => void;
   onLoadSample: () => void;
   onCut: () => void;
@@ -22,7 +22,7 @@ const BacklogInputScreen: React.FC<BacklogInputScreenProps> = ({
       <header>
         <h2>Paste the backlog</h2>
       </header>
-      <p>One item per line, or add them manually.</p>
+      <p className="note">One item per line, or add them manually.</p>
       <BacklogTable backlog={backlog} onChangeItem={onChangeItem} />
       <div className="actions">
         <button type="button" className="secondary" onClick={onAddItem}>

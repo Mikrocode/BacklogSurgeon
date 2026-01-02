@@ -14,8 +14,7 @@ interface OutputScreenProps {
 
 const OutputScreen: React.FC<OutputScreenProps> = ({ context, results, onStartOver }) => {
   const { capacityPoints, ranked, ship, cut } = results;
-
-  const hasCapacityLine = ranked.length > 0 && (ship.length > 0 || cut.length > 0);
+  const orderedRows = [...ship, ...cut];
 
   return (
     <div className="screen">
@@ -42,13 +41,18 @@ const OutputScreen: React.FC<OutputScreenProps> = ({ context, results, onStartOv
             </tr>
           </thead>
           <tbody>
-            {ranked.length === 0 && (
+            {orderedRows.length === 0 && (
               <tr>
                 <td colSpan={7}>No backlog items provided.</td>
               </tr>
             )}
-            {ranked.map((row, index) => (
+            {orderedRows.map((row, index) => (
               <React.Fragment key={row.id}>
+                {cut.length > 0 && index === ship.length && (
+                  <tr className="capacity-line">
+                    <td colSpan={7}>— Capacity line —</td>
+                  </tr>
+                )}
                 <tr className={row.decision === 'CUT' ? 'cut-row' : ''}>
                   <td>{index + 1}</td>
                   <td>{row.item}</td>
@@ -58,13 +62,6 @@ const OutputScreen: React.FC<OutputScreenProps> = ({ context, results, onStartOv
                   <td>{row.score.toFixed(2)}</td>
                   <td className={row.decision === 'CUT' ? 'cut-text' : ''}>{row.decision}</td>
                 </tr>
-                {hasCapacityLine &&
-                  cut.length > 0 &&
-                  ((ship.length > 0 && index === ship.length - 1) || (ship.length === 0 && index === 0)) && (
-                  <tr className="capacity-line" key={`line-${row.id}`}>
-                    <td colSpan={7}>— Capacity line —</td>
-                  </tr>
-                )}
               </React.Fragment>
             ))}
           </tbody>
