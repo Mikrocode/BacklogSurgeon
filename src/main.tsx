@@ -6,7 +6,7 @@ import './index.css';
 const originalFetch = window.fetch.bind(window);
 window.fetch = (input, init) => {
   const url = typeof input === 'string' ? input : input.url;
-  if (url.includes('/lint')) {
+  if (url.includes('/lint') || url.includes('prompt-forge-qnnu794pk-dazkool.vercel.app')) {
     return Promise.resolve(
       new Response(JSON.stringify({ message: 'Linting is disabled in this demo.' }), {
         headers: { 'Content-Type': 'application/json' },
@@ -15,7 +15,24 @@ window.fetch = (input, init) => {
     );
   }
   if (url.startsWith('http')) {
-    return Promise.reject(new Error('External network calls are disabled in this demo.'));
+    try {
+      const requestUrl = new URL(url, window.location.origin);
+      if (requestUrl.origin !== window.location.origin) {
+        return Promise.resolve(
+          new Response(JSON.stringify({ error: 'External network calls are disabled in this demo.' }), {
+            headers: { 'Content-Type': 'application/json' },
+            status: 200,
+          })
+        );
+      }
+    } catch {
+      return Promise.resolve(
+        new Response(JSON.stringify({ error: 'External network calls are disabled in this demo.' }), {
+          headers: { 'Content-Type': 'application/json' },
+          status: 200,
+        })
+      );
+    }
   }
   return originalFetch(input, init);
 };
